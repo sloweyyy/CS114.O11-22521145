@@ -16,55 +16,51 @@ def is_valid_word(word):
             is_verb(word))
 
 
-def is_same_gender(word1, word2):
-    if word1.endswith(("lios", "etr", "initis")):
-        return word2.endswith(("lios", "etr", "initis"))
-    else:
-        return word2.endswith(("liala", "etra", "inites"))
+def have_same_gender(words):
+    genders = set()
+    for word in words:
+        if word.endswith(("lios", "etr", "initis")):
+            genders.add("M")
+        else:
+            genders.add("F")
+    return len(genders) == 1
 
 
-def is_valid_clause(clause):
-    words = clause.split()
+def has_valid_word_order(words):
+    adjectives = []
+    nouns = []
+    verbs = []
 
-    has_adjective = False
-    has_noun = False
-    has_verb = False
-
-    for i, word in enumerate(words):
-        if not is_valid_word(word):
-            return False
-
+    for word in words:
         if is_adjective(word):
-            has_adjective = True
+            adjectives.append(word)
+        elif is_noun(word):
+            nouns.append(word)
+        elif is_verb(word):
+            verbs.append(word)
 
-        if is_noun(word):
-            if has_noun:
-                return False
-            has_noun = True
+    if not nouns:
+        return False
 
-        if is_verb(word):
-            has_verb = True
-
-        if i > 0 and not is_same_gender(words[i - 1], word):
+    if adjectives:
+        if nouns[0] not in adjectives:
             return False
 
-    return has_adjective and has_noun and has_verb
+    if verbs:
+        if nouns[-1] not in verbs:
+            return False
+
+    return True
 
 
 def is_valid_sentence(sentence):
     if not sentence:
         return False
 
-    if is_valid_word(sentence):
-        return True
-
-    clauses = sentence.split(',')
-
-    for clause in clauses:
-        if not is_valid_clause(clause):
-            return False
-
-    return True
+    words = sentence.split()
+    return (is_valid_word(sentence) and
+            have_same_gender(words) and
+            has_valid_word_order(words))
 
 
 sentence = input()
