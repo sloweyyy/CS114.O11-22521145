@@ -403,10 +403,10 @@ def gradient_descent_houses(X, y, w_in, b_in, cost_function, gradient_function, 
     num_iters gradient steps with learning rate alpha
     
     Args:
-      X : (array_like Shape (m,n)) matrix of examples 
-      y : (array_like Shape (m,)) target value of each example
+      X : (array_like Shape (m,n)    matrix of examples 
+      y : (array_like Shape (m,))    target value of each example
       w_in : (array_like Shape (n,)) Initial values of parameters of the model
-      b_in : (scalar) Initial value of parameter of the model
+      b_in : (scalar)                Initial value of parameter of the model
       cost_function: function to compute cost
       gradient_function: function to compute the gradient
       alpha : (float) Learning rate
@@ -414,60 +414,47 @@ def gradient_descent_houses(X, y, w_in, b_in, cost_function, gradient_function, 
     Returns
       w : (array_like Shape (n,)) Updated values of parameters of the model after
           running gradient descent
-      b : (scalar) Updated value of parameter of the model after
+      b : (scalar)                Updated value of parameter of the model after
           running gradient descent
     """
     
-    # number of training examples and features
-    m, n = X.shape
+    # number of training examples
+    m = len(X)
     
     # An array to store values at each iteration primarily for graphing later
-    hist = {}
-    hist["cost"] = []
-    hist["params"] = []
-    hist["grads"] = []
-    hist["iter"] = []
+    hist={}
+    hist["cost"] = []; hist["params"] = []; hist["grads"]=[]; hist["iter"]=[];
     
-    w = copy.deepcopy(w_in)  # Avoid modifying the global w within the function
+    w = copy.deepcopy(w_in)  #avoid modifying global w within function
     b = b_in
-    save_interval = np.ceil(num_iters / 10000)  # Prevent resource exhaustion for long runs
+    save_interval = np.ceil(num_iters/10000) # prevent resource exhaustion for long runs
 
-    print("Iteration   Cost", end=" ")
-    for j in range(n):
-        print(f"w{j}", end=" ")
-    print("b", end=" ")
-    for j in range(n):
-        print(f"djdw{j}", end=" ")
-    print("djdb")
-    
+    print(f"Iteration Cost          w0       w1       w2       w3       b       djdw0    djdw1    djdw2    djdw3    djdb  ")
+    print(f"---------------------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|")
+
     for i in range(num_iters):
+
         # Calculate the gradient and update the parameters
-        dj_db, dj_dw = gradient_function(X, y, w, b)   
+        dj_db,dj_dw = gradient_function(X, y, w, b)   
 
-        # Update Parameters using w, b, alpha, and gradient
-        w = w - alpha * dj_dw
-        b = b - alpha * dj_db
-
-        # Save cost J, w, b at each save interval for graphing
+        # Update Parameters using w, b, alpha and gradient
+        w = w - alpha * dj_dw               
+        b = b - alpha * dj_db               
+      
+        # Save cost J,w,b at each save interval for graphing
         if i == 0 or i % save_interval == 0:     
             hist["cost"].append(cost_function(X, y, w, b))
-            hist["params"].append([w, b])
-            hist["grads"].append([dj_dw, dj_db])
+            hist["params"].append([w,b])
+            hist["grads"].append([dj_dw,dj_db])
             hist["iter"].append(i)
 
         # Print cost every at intervals 10 times or as many iterations if < 10
-        if i % math.ceil(num_iters / 10) == 0:
+        if i% math.ceil(num_iters/10) == 0:
+            #print(f"Iteration {i:4d}: Cost {cost_function(X, y, w, b):8.2f}   ")
             cst = cost_function(X, y, w, b)
-            print(f"{i:9d} {cst:0.5e}", end=" ")
-            for j in range(n):
-                print(f"{w[j]: 0.1e}", end=" ")
-            print(f"{b: 0.1e}", end=" ")
-            for j in range(n):
-                print(f"{dj_dw[j]: 0.1e}", end=" ")
-            print(f"{dj_db: 0.1e}")
-
-    return w, b, hist
-
+            print(f"{i:9d} {cst:0.5e} {w[0]: 0.1e} {w[1]: 0.1e} {w[2]: 0.1e} {w[3]: 0.1e} {b: 0.1e} {dj_dw[0]: 0.1e} {dj_dw[1]: 0.1e} {dj_dw[2]: 0.1e} {dj_dw[3]: 0.1e} {dj_db: 0.1e}")
+       
+    return w, b, hist #return w,b and history for graphing
 
 def run_gradient_descent(X,y,iterations=1000, alpha = 1e-6):
 
@@ -557,14 +544,17 @@ def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, 
             print(f"Iteration {i:9d}, Cost: {cst:0.5e}")
     return w, b, hist #return w,b and history for graphing
 
+# Let's redefine the load_house_data function with the correct path and fix the issues with it
 
-X_features = ['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view', 'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated', 'zipcode', 'lat', 'long', 'sqft_living15', 'sqft_lot15']
+# Redefine the load_house_data function to load only the specified features and the target variable
 
-def load_house_data():
-    df = pd.read_csv('./data_house.csv')
-    X = df[X_features]  
-    y = df['price']
+def load_house_data(file_path, feature_names):
+    data = pd.read_csv(file_path)
+    X = data[feature_names].values  # Select only the specified features
+    y = data['price'].values  # Assuming 'price' is the target variable
     return X, y
+
+# Now, we use the updated function to load the dataset from the correct path
 
 def zscore_normalize_features(X,rtn_ms=False):
     """
