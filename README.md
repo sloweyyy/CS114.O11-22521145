@@ -20,3 +20,5 @@
 | MSSV       | Họ và Tên          | Email                   | Github                                                                                                                      |
 | ---------- | ------------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `22521145` | Trương Lê Vĩnh Phúc| 222521145@gm.uit.edu.vn | [![](https://img.shields.io/badge/sloweyyy-%2324292f.svg?style=flat-square&logo=github      )](https://github.com/sloweyyy) |
+| `22521467` | Lê Thành Tiến| 22521467@gm.uit.edu.vn | [![](https://img.shields.io/badge/ostic71-%2324292f.svg?style=flat-square&logo=github      )](https://github.com/ostic71) |
+
